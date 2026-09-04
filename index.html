@@ -1,0 +1,5296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
+  <meta name="theme-color" content="#172033">
+
+  <title>클린 SNS 프로젝트</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <style>
+
+    :root{
+      --dark:#172033;
+      --mint:#20c9b0;
+      --mint-dark:#0ca58f;
+      --pink:#ff4a78;
+      --cyan:#34b9ef;
+      --purple:#7867b8;
+      --green:#77b255;
+      --bg:#f5f7fb;
+      --line:#e4e9ef;
+      --gray:#687386;
+      --white:#ffffff;
+    }
+
+    *{
+      box-sizing:border-box;
+      -webkit-tap-highlight-color:transparent;
+    }
+
+    html,
+    body{
+      width:100%;
+      min-height:100%;
+      margin:0;
+      padding:0;
+      overflow-x:hidden;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      font-family:
+        Pretendard,
+        "Noto Sans KR",
+        "Apple SD Gothic Neo",
+        Arial,
+        sans-serif;
+
+      color:var(--dark);
+
+      background:
+        radial-gradient(circle at 10% 8%,#dcfff8 0,transparent 22%),
+        radial-gradient(circle at 92% 10%,#ffe5ef 0,transparent 22%),
+        var(--bg);
+    }
+
+    button,
+    input,
+    textarea{
+      font:inherit;
+    }
+
+    button{
+      cursor:pointer;
+      touch-action:manipulation;
+    }
+
+    /* ==================================================
+       시작 화면
+    ================================================== */
+
+    #loginScreen{
+      width:100%;
+      min-height:100vh;
+
+      display:flex;
+      justify-content:center;
+      align-items:center;
+
+      padding:
+        max(18px,env(safe-area-inset-top))
+        max(14px,env(safe-area-inset-right))
+        max(18px,env(safe-area-inset-bottom))
+        max(14px,env(safe-area-inset-left));
+    }
+
+    .login-card{
+      width:min(680px,100%);
+
+      background:#fff;
+
+      border-radius:30px;
+
+      padding:42px;
+
+      box-shadow:
+        0 20px 60px rgba(25,45,80,.12);
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+
+      padding:8px 14px;
+
+      border-radius:999px;
+
+      background:#ddfff8;
+
+      color:#068d79;
+
+      font-size:13px;
+      font-weight:900;
+
+      margin-bottom:18px;
+    }
+
+    .login-card h1{
+      margin:0;
+
+      font-size:clamp(38px,7vw,58px);
+
+      line-height:1.08;
+
+      letter-spacing:-3px;
+    }
+
+    .login-card h2{
+      margin:18px 0 14px;
+
+      font-size:clamp(23px,5vw,34px);
+
+      color:var(--pink);
+
+      line-height:1.35;
+
+      letter-spacing:-1px;
+
+      word-break:keep-all;
+    }
+
+    .intro{
+      margin:0 0 27px;
+
+      color:#657187;
+
+      font-size:16px;
+
+      line-height:1.75;
+
+      word-break:keep-all;
+    }
+
+    .field{
+      margin-bottom:16px;
+    }
+
+    .field label{
+      display:block;
+
+      margin-bottom:8px;
+
+      font-weight:900;
+    }
+
+    .field input{
+      width:100%;
+
+      min-height:54px;
+
+      border:2px solid var(--line);
+
+      border-radius:15px;
+
+      padding:14px 16px;
+
+      outline:none;
+
+      font-size:17px;
+
+      background:#fff;
+    }
+
+    .field input:focus{
+      border-color:var(--mint);
+
+      box-shadow:
+        0 0 0 4px rgba(32,201,176,.10);
+    }
+
+    .main-btn{
+      width:100%;
+
+      min-height:56px;
+
+      border:0;
+
+      border-radius:17px;
+
+      background:var(--dark);
+
+      color:white;
+
+      font-size:18px;
+
+      font-weight:950;
+
+      margin-top:5px;
+    }
+
+    .resume-area{
+      display:none;
+
+      margin-top:14px;
+    }
+
+    .resume-info{
+      padding:15px;
+
+      border-radius:15px;
+
+      background:#effcf9;
+
+      color:#237363;
+
+      line-height:1.6;
+
+      font-size:14px;
+
+      margin-bottom:10px;
+    }
+
+    .resume-btn{
+      width:100%;
+
+      min-height:54px;
+
+      border:2px solid var(--mint);
+
+      border-radius:16px;
+
+      background:#fff;
+
+      color:#098e79;
+
+      font-size:16px;
+
+      font-weight:950;
+    }
+
+    .save-note{
+      margin-top:17px;
+
+      text-align:center;
+
+      color:#8993a4;
+
+      font-size:13px;
+    }
+
+    /* ==================================================
+       상단
+    ================================================== */
+
+    #projectScreen{
+      display:none;
+
+      width:100%;
+
+      min-height:100vh;
+    }
+
+    .topbar{
+      width:100%;
+
+      min-height:70px;
+
+      position:sticky;
+
+      top:0;
+
+      z-index:100;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:space-between;
+
+      gap:8px;
+
+      padding:
+        10px
+        max(12px,env(safe-area-inset-right))
+        10px
+        max(12px,env(safe-area-inset-left));
+
+      background:rgba(255,255,255,.96);
+
+      border-bottom:1px solid #e8ecf2;
+
+      backdrop-filter:blur(10px);
+    }
+
+    .brand{
+      font-size:18px;
+
+      font-weight:950;
+
+      white-space:nowrap;
+    }
+
+    .top-right{
+      display:flex;
+
+      align-items:center;
+
+      gap:7px;
+
+      min-width:0;
+    }
+
+    .save-btn{
+      min-height:40px;
+
+      border:0;
+
+      border-radius:999px;
+
+      padding:8px 14px;
+
+      background:var(--mint-dark);
+
+      color:#fff;
+
+      font-size:13px;
+
+      font-weight:950;
+
+      white-space:nowrap;
+    }
+
+    .student-chip{
+      max-width:180px;
+
+      overflow:hidden;
+
+      text-overflow:ellipsis;
+
+      padding:8px 12px;
+
+      border-radius:999px;
+
+      background:#eff2f6;
+
+      font-size:13px;
+
+      font-weight:850;
+
+      white-space:nowrap;
+    }
+
+    .progress-wrap{
+      position:sticky;
+
+      top:70px;
+
+      z-index:90;
+
+      width:100%;
+
+      height:7px;
+
+      background:#e6ebf0;
+    }
+
+    #mainProgress{
+      height:100%;
+
+      width:16.66%;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--mint),
+          var(--cyan),
+          var(--pink)
+        );
+
+      transition:.3s;
+    }
+
+    /* ==================================================
+       공통
+    ================================================== */
+
+    .page-area{
+      width:100%;
+
+      max-width:1080px;
+
+      margin:0 auto;
+
+      padding:
+        36px
+        22px
+        80px;
+    }
+
+    .step{
+      display:none;
+
+      width:100%;
+    }
+
+    .step.active{
+      display:block;
+    }
+
+    .step-number{
+      margin-bottom:8px;
+
+      color:var(--mint-dark);
+
+      font-size:14px;
+
+      font-weight:950;
+    }
+
+    .step h2{
+      margin:0;
+
+      font-size:clamp(29px,5vw,46px);
+
+      line-height:1.2;
+
+      letter-spacing:-2px;
+
+      word-break:keep-all;
+    }
+
+    .highlight{
+      color:var(--pink);
+    }
+
+    .step-desc{
+      margin:12px 0 26px;
+
+      color:var(--gray);
+
+      line-height:1.7;
+
+      font-size:16px;
+
+      word-break:keep-all;
+    }
+
+    .content-card{
+      width:100%;
+
+      padding:28px;
+
+      background:#fff;
+
+      border-radius:25px;
+
+      box-shadow:
+        0 10px 35px rgba(30,50,80,.07);
+    }
+
+    .nav-row{
+      display:flex;
+
+      gap:10px;
+
+      margin-top:24px;
+    }
+
+    .nav-btn{
+      min-height:50px;
+
+      min-width:120px;
+
+      border:0;
+
+      border-radius:14px;
+
+      padding:13px 20px;
+
+      font-size:15px;
+
+      font-weight:950;
+    }
+
+    .prev-btn{
+      background:#e9edf2;
+
+      color:#485266;
+    }
+
+    .next-btn{
+      margin-left:auto;
+
+      background:var(--dark);
+
+      color:#fff;
+    }
+
+    .section-title{
+      margin:27px 0 14px;
+
+      font-size:20px;
+
+      font-weight:950;
+    }
+
+    .selection-count{
+      margin-left:4px;
+
+      color:var(--pink);
+
+      font-weight:950;
+    }
+
+    /* ==================================================
+       퀴즈
+    ================================================== */
+
+    .quiz-top{
+      display:flex;
+
+      align-items:center;
+
+      gap:14px;
+    }
+
+    #quizCount{
+      color:var(--mint-dark);
+
+      font-weight:950;
+
+      white-space:nowrap;
+    }
+
+    .quiz-mini-progress{
+      flex:1;
+
+      height:9px;
+
+      border-radius:999px;
+
+      overflow:hidden;
+
+      background:#edf1f4;
+    }
+
+    #quizProgressBar{
+      height:100%;
+
+      background:var(--mint);
+    }
+
+    .scenario{
+      min-height:160px;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:center;
+
+      text-align:center;
+
+      padding:24px 8px;
+
+      font-size:clamp(20px,3vw,25px);
+
+      font-weight:850;
+
+      line-height:1.6;
+
+      word-break:keep-all;
+    }
+
+    .ox-wrap{
+      display:grid;
+
+      grid-template-columns:1fr 1fr;
+
+      gap:14px;
+    }
+
+    .ox-btn{
+      min-height:115px;
+
+      border:3px solid var(--line);
+
+      border-radius:21px;
+
+      background:#fff;
+
+      font-size:35px;
+
+      font-weight:950;
+
+      transition:.15s;
+    }
+
+    .ox-btn:hover{
+      transform:translateY(-2px);
+
+      border-color:var(--mint);
+    }
+
+    .ox-btn.selected-yes{
+      border-color:var(--mint);
+
+      background:#eafff9;
+    }
+
+    .ox-btn.selected-no{
+      border-color:var(--pink);
+
+      background:#fff1f5;
+    }
+
+    .ox-label{
+      display:block;
+
+      margin-top:5px;
+
+      font-size:18px;
+
+      font-weight:950;
+    }
+
+    .yes-label{
+      color:var(--mint-dark);
+    }
+
+    .no-label{
+      color:var(--pink);
+    }
+
+    .feedback{
+      display:none;
+
+      margin-top:18px;
+
+      padding:18px;
+
+      border-radius:17px;
+
+      background:#effcf9;
+
+      line-height:1.7;
+
+      word-break:keep-all;
+    }
+
+    .feedback strong{
+      display:block;
+
+      margin-bottom:5px;
+    }
+
+    .quiz-nav{
+      display:flex;
+
+      gap:10px;
+
+      margin-top:15px;
+    }
+
+    .quiz-nav button{
+      flex:1;
+
+      min-height:50px;
+
+      border:0;
+
+      border-radius:14px;
+
+      font-size:15px;
+
+      font-weight:950;
+    }
+
+    #prevQuizBtn{
+      display:none;
+
+      background:#e9edf2;
+
+      color:#485266;
+    }
+
+    #nextQuizBtn{
+      display:none;
+
+      background:var(--dark);
+
+      color:#fff;
+    }
+
+    /* ==================================================
+       선택 카드
+    ================================================== */
+
+    .choice-grid{
+      display:grid;
+
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
+
+      gap:12px;
+
+      margin-top:16px;
+    }
+
+    .choice-card{
+      min-height:88px;
+
+      display:flex;
+
+      align-items:center;
+
+      gap:12px;
+
+      padding:17px;
+
+      border:2px solid var(--line);
+
+      border-radius:18px;
+
+      background:#fff;
+
+      font-weight:800;
+
+      line-height:1.5;
+
+      cursor:pointer;
+
+      word-break:keep-all;
+    }
+
+    .choice-card.selected{
+      border-color:var(--mint);
+
+      background:#eafff9;
+
+      box-shadow:
+        inset 0 0 0 1px var(--mint);
+    }
+
+    .choice-icon{
+      flex:none;
+
+      font-size:26px;
+    }
+
+    /* ==================================================
+       가치
+    ================================================== */
+
+    .value-wrap{
+      display:flex;
+
+      flex-wrap:wrap;
+
+      gap:9px;
+    }
+
+    .value-chip{
+      min-height:42px;
+
+      border:2px solid var(--line);
+
+      border-radius:999px;
+
+      padding:9px 15px;
+
+      background:#fff;
+
+      font-size:14px;
+
+      font-weight:900;
+    }
+
+    .value-chip.selected{
+      border-color:var(--dark);
+
+      background:var(--dark);
+
+      color:#fff;
+    }
+
+    /* ==================================================
+       프롬프트 유형
+    ================================================== */
+
+    .prompt-intro{
+      margin-bottom:22px;
+
+      color:#657187;
+
+      line-height:1.7;
+
+      word-break:keep-all;
+    }
+
+    .prompt-type-list{
+      display:grid;
+
+      grid-template-columns:1fr;
+
+      gap:11px;
+    }
+
+    .prompt-type-card{
+      width:100%;
+
+      display:flex;
+
+      align-items:center;
+
+      gap:15px;
+
+      padding:20px;
+
+      border:2px solid #edf0f4;
+
+      border-radius:19px;
+
+      background:#fff;
+
+      text-align:left;
+
+      transition:.15s;
+    }
+
+    .prompt-type-card:hover{
+      transform:translateY(-2px);
+
+      border-color:#c9eee7;
+    }
+
+    .prompt-type-card.selected{
+      border-color:var(--mint);
+
+      background:#ebfff8;
+
+      box-shadow:
+        inset 0 0 0 1px var(--mint);
+    }
+
+    .prompt-type-icon{
+      width:36px;
+
+      flex:none;
+
+      text-align:center;
+
+      font-size:25px;
+    }
+
+    .prompt-type-info{
+      flex:1;
+
+      min-width:0;
+    }
+
+    .prompt-type-title{
+      margin-bottom:5px;
+
+      font-size:16px;
+
+      font-weight:950;
+    }
+
+    .prompt-type-desc{
+      color:#728097;
+
+      font-size:14px;
+
+      line-height:1.5;
+    }
+
+    .my-prompt-label{
+      margin-top:25px;
+
+      margin-bottom:9px;
+
+      font-size:14px;
+
+      font-weight:950;
+
+      color:#57647a;
+    }
+
+    #editablePrompt{
+      width:100%;
+
+      min-height:210px;
+
+      padding:18px;
+
+      border:0;
+
+      border-radius:16px;
+
+      outline:none;
+
+      resize:vertical;
+
+      background:#f5f7fa;
+
+      color:#172033;
+
+      font-size:15px;
+
+      line-height:1.65;
+    }
+
+    #editablePrompt:focus{
+      box-shadow:
+        inset 0 0 0 2px var(--mint);
+    }
+
+    .prompt-bottom{
+      display:flex;
+
+      justify-content:flex-end;
+
+      margin-top:12px;
+    }
+
+    .copy-btn{
+      min-height:48px;
+
+      border:0;
+
+      border-radius:14px;
+
+      padding:12px 19px;
+
+      background:#edf2f7;
+
+      color:#172033;
+
+      font-weight:950;
+    }
+
+    /* ==================================================
+       슬로건
+    ================================================== */
+
+    .slogan-rules{
+      display:grid;
+
+      grid-template-columns:
+        repeat(3,1fr);
+
+      gap:11px;
+
+      margin-bottom:18px;
+    }
+
+    .rule-card{
+      padding:17px;
+
+      border-radius:16px;
+
+      background:#f5f7fa;
+
+      text-align:center;
+
+      font-weight:850;
+    }
+
+    .rule-card span{
+      display:block;
+
+      margin-bottom:5px;
+
+      font-size:27px;
+    }
+
+    #sloganInput{
+      width:100%;
+
+      min-height:150px;
+
+      padding:18px;
+
+      border:3px solid var(--line);
+
+      border-radius:18px;
+
+      outline:none;
+
+      resize:vertical;
+
+      font-size:clamp(21px,4vw,27px);
+
+      font-weight:900;
+
+      line-height:1.5;
+    }
+
+    #sloganInput:focus{
+      border-color:var(--pink);
+    }
+
+    .char-count{
+      margin-top:7px;
+
+      text-align:right;
+
+      color:#8a94a4;
+
+      font-size:13px;
+    }
+
+    .slogan-tip{
+      margin-top:15px;
+
+      padding:17px;
+
+      border-radius:16px;
+
+      background:#fff2f7;
+
+      color:#704354;
+
+      line-height:1.7;
+    }
+
+    /* ==================================================
+       결과 포스터
+    ================================================== */
+
+    .poster-wrap{
+      width:100%;
+
+      display:flex;
+
+      justify-content:center;
+    }
+
+    #resultCard{
+      width:760px;
+
+      max-width:100%;
+
+      overflow:visible;
+
+      border-radius:30px;
+
+      background:#fff;
+
+      box-shadow:
+        0 18px 50px rgba(30,50,80,.14);
+    }
+
+    .poster-top{
+      padding:40px;
+
+      border-radius:30px 30px 0 0;
+
+      background:
+        radial-gradient(
+          circle at 90% 10%,
+          rgba(255,70,130,.25),
+          transparent 32%
+        ),
+        radial-gradient(
+          circle at 5% 90%,
+          rgba(40,225,195,.20),
+          transparent 30%
+        ),
+        var(--dark);
+
+      color:#fff;
+    }
+
+    .poster-badge{
+      display:inline-block;
+
+      padding:7px 12px;
+
+      border:
+        1px solid rgba(255,255,255,.25);
+
+      border-radius:999px;
+
+      color:#69ead6;
+
+      font-size:12px;
+
+      font-weight:950;
+
+      letter-spacing:1.4px;
+    }
+
+    .poster-title{
+      margin-top:10px;
+
+      font-size:42px;
+
+      line-height:1.15;
+
+      font-weight:950;
+
+      letter-spacing:-2px;
+    }
+
+    .poster-student{
+      margin-top:13px;
+
+      color:#dce1e9;
+
+      font-weight:750;
+    }
+
+    .poster-body{
+      padding:38px 40px;
+    }
+
+    .poster-small{
+      color:var(--pink);
+
+      font-size:13px;
+
+      font-weight:950;
+    }
+
+    .poster-slogan{
+      width:100%;
+
+      padding:14px 0 32px;
+
+      border-bottom:
+        2px solid #eef1f4;
+
+      font-size:42px;
+
+      font-weight:950;
+
+      line-height:1.4;
+
+      letter-spacing:-1.5px;
+
+      white-space:normal;
+
+      word-break:keep-all;
+
+      overflow-wrap:anywhere;
+    }
+
+    .value-action-grid{
+      display:grid;
+
+      grid-template-columns:
+        1fr 1.25fr;
+
+      gap:13px;
+
+      margin-top:26px;
+    }
+
+    .poster-box{
+      padding:19px;
+
+      border-radius:17px;
+
+      background:#f5f7fa;
+    }
+
+    .poster-box-title{
+      margin-bottom:8px;
+
+      color:#748094;
+
+      font-size:12px;
+
+      font-weight:950;
+    }
+
+    .poster-value{
+      color:var(--mint-dark);
+
+      font-size:22px;
+
+      font-weight:950;
+
+      line-height:1.5;
+
+      word-break:keep-all;
+    }
+
+    .poster-actions{
+      font-size:15px;
+
+      line-height:1.65;
+
+      font-weight:850;
+    }
+
+    .practice-title{
+      margin-top:26px;
+
+      color:#6f7a8d;
+
+      font-size:13px;
+
+      font-weight:950;
+    }
+
+    .practice-list{
+      display:grid;
+
+      gap:8px;
+
+      margin-top:11px;
+    }
+
+    .practice-item{
+      padding:12px 15px;
+
+      border-radius:13px;
+
+      background:#effcf9;
+
+      font-size:14px;
+
+      font-weight:800;
+
+      line-height:1.5;
+    }
+
+    .poster-footer{
+      display:flex;
+
+      justify-content:space-between;
+
+      gap:10px;
+
+      margin-top:26px;
+
+      padding-top:16px;
+
+      border-top:
+        1px solid #e7ebef;
+
+      color:#8993a3;
+
+      font-size:11px;
+    }
+
+    .download-area{
+      width:min(760px,100%);
+
+      margin:25px auto 0;
+
+      padding:24px;
+
+      border-radius:23px;
+
+      text-align:center;
+
+      background:
+        linear-gradient(
+          135deg,
+          #fff0f6,
+          #ecfff9
+        );
+    }
+
+    .download-area h3{
+      margin:0 0 6px;
+
+      font-size:23px;
+    }
+
+    .download-area p{
+      margin:0 0 16px;
+
+      color:var(--gray);
+
+      line-height:1.6;
+    }
+
+    .download-btn{
+      width:100%;
+
+      min-height:58px;
+
+      border:0;
+
+      border-radius:17px;
+
+      background:
+        linear-gradient(
+          135deg,
+          #ff3478,
+          #ff5b69
+        );
+
+      color:#fff;
+
+      font-size:18px;
+
+      font-weight:950;
+
+      box-shadow:
+        0 10px 25px rgba(255,52,120,.24);
+    }
+
+    .reset-btn{
+      display:block;
+
+      margin:20px auto 0;
+
+      min-height:46px;
+
+      padding:10px 18px;
+
+      border:
+        2px solid #d8dde4;
+
+      border-radius:13px;
+
+      background:white;
+
+      color:#657084;
+
+      font-weight:900;
+    }
+
+    /* ==================================================
+       저장 토스트
+    ================================================== */
+
+    #saveToast{
+      position:fixed;
+
+      right:18px;
+
+      bottom:
+        max(
+          18px,
+          env(safe-area-inset-bottom)
+        );
+
+      z-index:300;
+
+      padding:11px 17px;
+
+      border-radius:999px;
+
+      background:var(--dark);
+
+      color:#fff;
+
+      font-size:13px;
+
+      font-weight:850;
+
+      opacity:0;
+
+      transform:translateY(15px);
+
+      transition:.2s;
+
+      pointer-events:none;
+    }
+
+    #saveToast.show{
+      opacity:1;
+
+      transform:translateY(0);
+    }
+
+    /* ==================================================
+       태블릿
+    ================================================== */
+
+    @media
+    (min-width:681px)
+    and
+    (max-width:1024px){
+
+      .page-area{
+        max-width:none;
+
+        padding:
+          32px
+          16px
+          70px;
+      }
+
+      .content-card{
+        padding:25px;
+      }
+
+    }
+
+    /* ==================================================
+       모바일
+    ================================================== */
+
+    @media(max-width:680px){
+
+      #loginScreen{
+        align-items:flex-start;
+
+        padding:
+          max(
+            8px,
+            env(safe-area-inset-top)
+          )
+          5px
+          max(
+            8px,
+            env(safe-area-inset-bottom)
+          )
+          5px;
+      }
+
+      .login-card{
+        width:100%;
+
+        padding:22px 14px;
+
+        border-radius:18px;
+
+        box-shadow:
+          0 8px 25px
+          rgba(25,45,80,.08);
+      }
+
+      .login-card h1{
+        letter-spacing:-2px;
+      }
+
+      .login-card h2{
+        font-size:23px;
+      }
+
+      .intro{
+        font-size:15px;
+      }
+
+      .topbar{
+        min-height:62px;
+
+        padding:
+          8px
+          max(
+            6px,
+            env(safe-area-inset-right)
+          )
+          8px
+          max(
+            6px,
+            env(safe-area-inset-left)
+          );
+      }
+
+      .progress-wrap{
+        top:62px;
+      }
+
+      .brand{
+        font-size:14px;
+      }
+
+      .top-right{
+        gap:4px;
+      }
+
+      .save-btn{
+        min-height:36px;
+
+        padding:7px 9px;
+
+        font-size:12px;
+      }
+
+      .student-chip{
+        max-width:105px;
+
+        padding:7px 8px;
+
+        font-size:11px;
+      }
+
+      .page-area{
+        width:100%;
+
+        max-width:none;
+
+        padding:
+          18px
+          5px
+          52px;
+      }
+
+      .step-number,
+      .step h2,
+      .step-desc{
+        margin-left:7px;
+
+        margin-right:7px;
+      }
+
+      .step-desc{
+        margin-bottom:18px;
+
+        font-size:15px;
+      }
+
+      .content-card{
+        width:100%;
+
+        padding:14px;
+
+        border-radius:17px;
+
+        box-shadow:
+          0 5px 18px
+          rgba(30,50,80,.06);
+      }
+
+      .scenario{
+        min-height:130px;
+
+        padding:14px 0;
+
+        font-size:19px;
+      }
+
+      .ox-wrap{
+        gap:7px;
+      }
+
+      .ox-btn{
+        min-height:96px;
+
+        padding:9px 4px;
+
+        font-size:29px;
+      }
+
+      .ox-label{
+        font-size:16px;
+      }
+
+      .quiz-nav{
+        gap:7px;
+      }
+
+      .quiz-nav button{
+        min-height:46px;
+
+        font-size:14px;
+      }
+
+      .choice-grid{
+        grid-template-columns:1fr;
+
+        gap:8px;
+      }
+
+      .choice-card{
+        min-height:66px;
+
+        padding:11px;
+
+        border-radius:14px;
+
+        font-size:14px;
+      }
+
+      .choice-icon{
+        font-size:23px;
+      }
+
+      .value-wrap{
+        gap:7px;
+      }
+
+      .value-chip{
+        min-height:38px;
+
+        padding:7px 11px;
+
+        font-size:13px;
+      }
+
+      .section-title{
+        font-size:18px;
+      }
+
+      .prompt-type-card{
+        padding:15px 13px;
+
+        gap:11px;
+
+        border-radius:15px;
+      }
+
+      .prompt-type-title{
+        font-size:15px;
+      }
+
+      .prompt-type-desc{
+        font-size:13px;
+      }
+
+      #editablePrompt{
+        min-height:250px;
+
+        padding:14px;
+
+        font-size:14px;
+      }
+
+      .copy-btn{
+        width:100%;
+      }
+
+      .slogan-rules{
+        grid-template-columns:
+          repeat(3,1fr);
+
+        gap:6px;
+      }
+
+      .rule-card{
+        padding:10px 4px;
+
+        font-size:12px;
+      }
+
+      .rule-card span{
+        font-size:22px;
+      }
+
+      #sloganInput{
+        min-height:130px;
+
+        padding:14px;
+
+        font-size:21px;
+      }
+
+      .nav-row{
+        position:sticky;
+
+        bottom:
+          max(
+            5px,
+            env(safe-area-inset-bottom)
+          );
+
+        z-index:50;
+
+        padding:5px;
+
+        margin-top:16px;
+
+        border-radius:13px;
+
+        background:
+          rgba(245,247,251,.95);
+
+        backdrop-filter:blur(6px);
+      }
+
+      .nav-btn{
+        min-width:0;
+
+        flex:1;
+
+        min-height:46px;
+
+        padding:10px 8px;
+
+        font-size:14px;
+      }
+
+      .next-btn{
+        margin-left:0;
+      }
+
+      #resultCard{
+        width:100%;
+
+        border-radius:17px;
+      }
+
+      .poster-top{
+        padding:24px 16px;
+
+        border-radius:17px 17px 0 0;
+      }
+
+      .poster-title{
+        font-size:29px;
+      }
+
+      .poster-body{
+        padding:22px 16px;
+      }
+
+      .poster-slogan{
+        font-size:30px;
+
+        letter-spacing:-1px;
+      }
+
+      .value-action-grid{
+        grid-template-columns:1fr;
+
+        gap:9px;
+      }
+
+      .poster-value{
+        font-size:20px;
+      }
+
+      .poster-footer{
+        flex-direction:column;
+
+        gap:3px;
+      }
+
+      .download-area{
+        width:100%;
+
+        padding:18px 12px;
+
+        border-radius:17px;
+      }
+
+      .download-area h3{
+        font-size:20px;
+      }
+
+      .download-btn{
+        min-height:54px;
+
+        font-size:16px;
+      }
+
+    }
+
+    @media(max-width:380px){
+
+      .student-chip{
+        display:none;
+      }
+
+      .brand{
+        font-size:13px;
+      }
+
+      .slogan-rules{
+        grid-template-columns:1fr;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+
+<!-- ==================================================
+     시작 화면
+================================================== -->
+
+<section id="loginScreen">
+
+  <div class="login-card">
+
+    <div class="badge">
+      🌿 DIGITAL CITIZEN PROJECT
+    </div>
+
+    <h1>
+      클린 SNS 프로젝트
+    </h1>
+
+    <h2>
+      SNS에서 나는 어떤 선택을 하고 있을까?
+    </h2>
+
+    <p class="intro">
+      SNS에서 하는 작은 선택 하나가
+      친구와 나의 관계에 영향을 줄 수 있습니다.
+      <br><br>
+      평소 나의 SNS 사용 모습을 돌아보고
+      <strong>
+        더 건강한 SNS 문화를 만드는
+        나만의 슬로건
+      </strong>
+      을 만들어 봅시다.
+    </p>
+
+
+    <div class="field">
+
+      <label>
+        학번
+      </label>
+
+      <input
+        id="studentId"
+        type="text"
+        inputmode="numeric"
+        autocomplete="off"
+        placeholder="예) 10315"
+        oninput="checkSavedStudent()"
+      >
+
+    </div>
+
+
+    <div class="field">
+
+      <label>
+        이름
+      </label>
+
+      <input
+        id="studentName"
+        type="text"
+        autocomplete="off"
+        placeholder="이름을 입력하세요"
+      >
+
+    </div>
+
+
+    <button
+      class="main-btn"
+      onclick="startProject()"
+    >
+      프로젝트 시작하기 →
+    </button>
+
+
+    <div
+      class="resume-area"
+      id="resumeArea"
+    >
+
+      <div
+        class="resume-info"
+        id="resumeInfo"
+      ></div>
+
+      <button
+        class="resume-btn"
+        id="resumeBtn"
+        onclick="resumeProject()"
+      >
+        저장된 활동 이어하기
+      </button>
+
+    </div>
+
+
+    <div class="save-note">
+      💾 현재 기기의 브라우저에 학번별로 저장됩니다.
+    </div>
+
+  </div>
+
+</section>
+
+
+
+<!-- ==================================================
+     프로젝트 화면
+================================================== -->
+
+<section id="projectScreen">
+
+  <header class="topbar">
+
+    <div class="brand">
+      CLEAN SNS
+    </div>
+
+    <div class="top-right">
+
+      <button
+        class="save-btn"
+        onclick="manualSave()"
+      >
+        💾 저장
+      </button>
+
+      <div
+        class="student-chip"
+        id="studentChip"
+      ></div>
+
+    </div>
+
+  </header>
+
+
+  <div class="progress-wrap">
+    <div id="mainProgress"></div>
+  </div>
+
+
+  <main class="page-area">
+
+
+    <!-- ==================================================
+         STEP 1
+    ================================================== -->
+
+    <section
+      class="step active"
+      id="step1"
+    >
+
+      <div class="step-number">
+        STEP 01
+      </div>
+
+      <h2>
+        이 행동,
+        <span class="highlight">
+          돼요? 안돼요?
+        </span>
+      </h2>
+
+      <p class="step-desc">
+        SNS에서 일어날 수 있는 상황을 살펴보고
+        해도 되는 행동인지 판단해 보세요.
+      </p>
+
+
+      <div class="content-card">
+
+        <div class="quiz-top">
+
+          <div id="quizCount">
+            1 / 15
+          </div>
+
+          <div class="quiz-mini-progress">
+            <div id="quizProgressBar"></div>
+          </div>
+
+        </div>
+
+
+        <div
+          class="scenario"
+          id="quizScenario"
+        ></div>
+
+
+        <div class="ox-wrap">
+
+          <button
+            class="ox-btn"
+            id="yesQuizBtn"
+            onclick="answerQuiz(true)"
+          >
+            ⭕
+
+            <span class="ox-label yes-label">
+              돼요!
+            </span>
+
+          </button>
+
+
+          <button
+            class="ox-btn"
+            id="noQuizBtn"
+            onclick="answerQuiz(false)"
+          >
+            ❌
+
+            <span class="ox-label no-label">
+              안돼요!
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <div
+          class="feedback"
+          id="quizFeedback"
+        ></div>
+
+
+        <div class="quiz-nav">
+
+          <button
+            id="prevQuizBtn"
+            onclick="previousQuiz()"
+          >
+            ← 이전 문제
+          </button>
+
+          <button
+            id="nextQuizBtn"
+            onclick="nextQuiz()"
+          >
+            다음 문제 →
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="nav-row"
+        id="quizFinishNav"
+        style="display:none;"
+      >
+
+        <button
+          class="nav-btn next-btn"
+          onclick="goStep(2)"
+        >
+          2단계로 →
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         STEP 2
+    ================================================== -->
+
+    <section
+      class="step"
+      id="step2"
+    >
+
+      <div class="step-number">
+        STEP 02
+      </div>
+
+      <h2>
+        내가 할 수 있는
+        <span class="highlight">
+          실천
+        </span>
+        은?
+      </h2>
+
+      <p class="step-desc">
+        내가 오늘부터 실천할 수 있는 행동을
+        <strong>3개 선택</strong>하세요.
+      </p>
+
+
+      <div class="content-card">
+
+        <strong>
+          내가 선택한 실천
+        </strong>
+
+        <span
+          class="selection-count"
+          id="practiceCount"
+        >
+          0 / 3
+        </span>
+
+
+        <div
+          class="choice-grid"
+          id="practiceGrid"
+        ></div>
+
+      </div>
+
+
+      <div class="nav-row">
+
+        <button
+          class="nav-btn prev-btn"
+          onclick="goStep(1)"
+        >
+          ← 이전
+        </button>
+
+        <button
+          class="nav-btn next-btn"
+          onclick="validateStep2()"
+        >
+          다음 →
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         STEP 3
+    ================================================== -->
+
+    <section
+      class="step"
+      id="step3"
+    >
+
+      <div class="step-number">
+        STEP 03
+      </div>
+
+      <h2>
+        클린 SNS를 위한
+        <span class="highlight">
+          가치 + 행동
+        </span>
+      </h2>
+
+      <p class="step-desc">
+        클린 SNS를 위해 가장 중요하다고 생각하는
+        <strong>가치 2개</strong>와
+        <strong>행동 2개</strong>를 선택하세요.
+      </p>
+
+
+      <div class="content-card">
+
+        <div class="section-title">
+
+          ① 가치 2개 선택
+
+          <span
+            class="selection-count"
+            id="valueCount"
+          >
+            0 / 2
+          </span>
+
+        </div>
+
+
+        <div
+          class="value-wrap"
+          id="valueGrid"
+        ></div>
+
+
+        <div class="section-title">
+
+          ② 행동 2개 선택
+
+          <span
+            class="selection-count"
+            id="actionCount"
+          >
+            0 / 2
+          </span>
+
+        </div>
+
+
+        <div
+          class="choice-grid"
+          id="actionGrid"
+        ></div>
+
+      </div>
+
+
+      <div class="nav-row">
+
+        <button
+          class="nav-btn prev-btn"
+          onclick="goStep(2)"
+        >
+          ← 이전
+        </button>
+
+        <button
+          class="nav-btn next-btn"
+          onclick="validateStep3()"
+        >
+          다음 →
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         STEP 4
+    ================================================== -->
+
+    <section
+      class="step"
+      id="step4"
+    >
+
+      <div class="step-number">
+        STEP 04
+      </div>
+
+      <h2>
+        프롬프트
+        <span class="highlight">
+          예시 고르기
+        </span>
+      </h2>
+
+      <p class="step-desc">
+        내가 고른 가치 2개와 행동 2개가 자동으로 합쳐집니다.
+        마음에 드는 유형을 고른 뒤
+        프롬프트를 수정하고 복사해서 생성형 AI에 물어보세요.
+      </p>
+
+
+      <div class="content-card">
+
+
+        <div class="prompt-type-list">
+
+
+          <button
+            class="prompt-type-card"
+            data-type="short"
+            onclick="selectPromptType('short')"
+          >
+
+            <div class="prompt-type-icon">
+              ✂️
+            </div>
+
+            <div class="prompt-type-info">
+
+              <div class="prompt-type-title">
+                짧고 강한 한 줄형
+              </div>
+
+              <div class="prompt-type-desc">
+                12자 이내로 딱 꽂히는 슬로건
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="prompt-type-card"
+            data-type="rhythm"
+            onclick="selectPromptType('rhythm')"
+          >
+
+            <div class="prompt-type-icon">
+              🎵
+            </div>
+
+            <div class="prompt-type-info">
+
+              <div class="prompt-type-title">
+                대구·리듬형
+              </div>
+
+              <div class="prompt-type-desc">
+                앞뒤가 짝을 이루는 리듬 슬로건
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="prompt-type-card"
+            data-type="question"
+            onclick="selectPromptType('question')"
+          >
+
+            <div class="prompt-type-icon">
+              ❓
+            </div>
+
+            <div class="prompt-type-info">
+
+              <div class="prompt-type-title">
+                질문형
+              </div>
+
+              <div class="prompt-type-desc">
+                읽는 사람이 생각하게 되는 슬로건
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="prompt-type-card"
+            data-type="metaphor"
+            onclick="selectPromptType('metaphor')"
+          >
+
+            <div class="prompt-type-icon">
+              🌱
+            </div>
+
+            <div class="prompt-type-info">
+
+              <div class="prompt-type-title">
+                비유형
+              </div>
+
+              <div class="prompt-type-desc">
+                사물에 빗대어 표현하는 슬로건
+              </div>
+
+            </div>
+
+          </button>
+
+
+          <button
+            class="prompt-type-card"
+            data-type="poster"
+            onclick="selectPromptType('poster')"
+          >
+
+            <div class="prompt-type-icon">
+              🖼️
+            </div>
+
+            <div class="prompt-type-info">
+
+              <div class="prompt-type-title">
+                포스터 문구형
+              </div>
+
+              <div class="prompt-type-desc">
+                게시용 포스터의 큰 글씨 + 작은 글씨
+              </div>
+
+            </div>
+
+          </button>
+
+
+        </div>
+
+
+        <div class="my-prompt-label">
+          내 프롬프트 (수정 가능)
+        </div>
+
+
+        <textarea
+          id="editablePrompt"
+          oninput="promptChanged()"
+        ></textarea>
+
+
+        <div class="prompt-bottom">
+
+          <button
+            class="copy-btn"
+            onclick="copyPrompt()"
+          >
+            📋 복사하기
+          </button>
+
+        </div>
+
+
+      </div>
+
+
+      <div class="nav-row">
+
+        <button
+          class="nav-btn prev-btn"
+          onclick="goStep(3)"
+        >
+          ← 이전
+        </button>
+
+        <button
+          class="nav-btn next-btn"
+          onclick="validateStep4()"
+        >
+          다음 →
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         STEP 5
+    ================================================== -->
+
+    <section
+      class="step"
+      id="step5"
+    >
+
+      <div class="step-number">
+        STEP 05
+      </div>
+
+      <h2>
+        나의
+        <span class="highlight">
+          클린 SNS 슬로건
+        </span>
+      </h2>
+
+      <p class="step-desc">
+        생성형 AI가 제안한 문구를 참고하여
+        나만의 슬로건을 완성하세요.
+      </p>
+
+
+      <div class="content-card">
+
+        <div class="slogan-rules">
+
+          <div class="rule-card">
+            <span>👀</span>
+            눈에 띄게
+          </div>
+
+          <div class="rule-card">
+            <span>⚡</span>
+            짧고 강하게
+          </div>
+
+          <div class="rule-card">
+            <span>🙌</span>
+            실천 가능하게
+          </div>
+
+        </div>
+
+
+        <textarea
+          id="sloganInput"
+          maxlength="100"
+          placeholder="예) 올리기 전 3초, 친구 마음은 오래!"
+          oninput="sloganChanged()"
+        ></textarea>
+
+
+        <div
+          class="char-count"
+          id="charCount"
+        >
+          0 / 100
+        </div>
+
+
+        <div class="slogan-tip">
+          💡 AI의 문장을 그대로 사용하기보다
+          마음에 드는 표현을 고르고
+          자신의 말로 조금 더 다듬어 보세요.
+        </div>
+
+      </div>
+
+
+      <div class="nav-row">
+
+        <button
+          class="nav-btn prev-btn"
+          onclick="goStep(4)"
+        >
+          ← 이전
+        </button>
+
+        <button
+          class="nav-btn next-btn"
+          onclick="validateStep5()"
+        >
+          포스터 완성 →
+        </button>
+
+      </div>
+
+    </section>
+
+
+
+    <!-- ==================================================
+         STEP 6
+    ================================================== -->
+
+    <section
+      class="step"
+      id="step6"
+    >
+
+      <div class="step-number">
+        STEP 06
+      </div>
+
+      <h2>
+        나의
+        <span class="highlight">
+          클린 SNS 포스터
+        </span>
+      </h2>
+
+      <p class="step-desc">
+        활동 결과를 한 장의 이미지로 저장하세요.
+      </p>
+
+
+      <div class="poster-wrap">
+
+        <div id="resultCard">
+
+          <div class="poster-top">
+
+            <div class="poster-badge">
+              CLEAN SNS PROJECT
+            </div>
+
+            <div class="poster-title">
+              나의 클린 SNS 선언
+            </div>
+
+            <div
+              class="poster-student"
+              id="resultStudent"
+            ></div>
+
+          </div>
+
+
+          <div class="poster-body">
+
+            <div class="poster-small">
+              MY CLEAN SNS SLOGAN
+            </div>
+
+
+            <div
+              class="poster-slogan"
+              id="resultSlogan"
+            ></div>
+
+
+            <div class="value-action-grid">
+
+              <div class="poster-box">
+
+                <div class="poster-box-title">
+                  내가 지키고 싶은 가치
+                </div>
+
+                <div
+                  class="poster-value"
+                  id="resultValue"
+                ></div>
+
+              </div>
+
+
+              <div class="poster-box">
+
+                <div class="poster-box-title">
+                  내가 선택한 행동
+                </div>
+
+                <div
+                  class="poster-actions"
+                  id="resultActions"
+                ></div>
+
+              </div>
+
+            </div>
+
+
+            <div class="practice-title">
+              오늘부터 내가 실천할 3가지
+            </div>
+
+
+            <div
+              class="practice-list"
+              id="resultPractice"
+            ></div>
+
+
+            <div class="poster-footer">
+
+              <span>
+                나부터 시작하는 건강한 SNS
+              </span>
+
+              <span>
+                CLEAN SNS
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="download-area">
+
+        <h3>
+          🎉 나만의 클린 SNS 포스터 완성!
+        </h3>
+
+        <p>
+          아래 버튼을 눌러 PNG 이미지로 저장하세요.
+        </p>
+
+        <button
+          class="download-btn"
+          id="downloadBtn"
+          onclick="downloadResult()"
+        >
+          📥 내 슬로건 포스터 이미지 저장
+        </button>
+
+      </div>
+
+
+      <button
+        class="reset-btn"
+        onclick="resetProject()"
+      >
+        ↻ 처음부터 다시 하기
+      </button>
+
+    </section>
+
+
+  </main>
+
+</section>
+
+
+<div id="saveToast">
+  💾 저장되었습니다.
+</div>
+
+
+
+<script>
+
+/* ==================================================
+   저장 버전
+================================================== */
+
+const STORAGE_PREFIX =
+  "cleanSNS_V5_student_";
+
+
+let state = {
+
+  studentId:"",
+  studentName:"",
+
+  currentStep:1,
+
+  quizIndex:0,
+  quizAnswers:[],
+
+  practices:[],
+
+  values:[],
+  actions:[],
+
+  promptType:"short",
+  prompt:"",
+
+  slogan:""
+
+};
+
+
+/* ==================================================
+   퀴즈
+   true = 돼요
+   false = 안돼요
+================================================== */
+
+const quizzes = [
+
+  {
+    text:
+      "친구가 우스꽝스럽게 나온 사진을 허락 없이 반 단체 채팅방에 올렸다.",
+
+    answer:false,
+
+    feedback:
+      "친구 사진은 먼저 허락을 받고 공유해야 합니다. 허락 없이 올리면 친구에게 상처를 줄 수 있습니다."
+  },
+
+  {
+    text:
+      "친구의 SNS 게시물에 장난으로 계속 '못생겼다', '극혐' 같은 댓글을 남겼다.",
+
+    answer:false,
+
+    feedback:
+      "장난이라고 해도 반복적인 조롱과 모욕적인 표현은 친구에게 큰 상처를 줄 수 있습니다."
+  },
+
+  {
+    text:
+      "친구와 나눈 메시지를 친구의 허락을 받은 후 다른 친구에게 보여주었다.",
+
+    answer:true,
+
+    feedback:
+      "상대방이 동의했다면 괜찮지만 개인정보나 다른 사람의 이야기가 포함되어 있는지도 확인하는 것이 좋습니다."
+  },
+
+  {
+    text:
+      "친구가 단체 채팅방에서 나갔는데 재미로 계속 다시 초대했다.",
+
+    answer:false,
+
+    feedback:
+      "상대방이 원하지 않는데 반복해서 다시 초대하면 괴롭힘이 될 수 있습니다."
+  },
+
+  {
+    text:
+      "싸운 친구의 이름은 쓰지 않았지만 반 친구들이 누구인지 알 수 있게 SNS에 욕하는 글을 올렸다.",
+
+    answer:false,
+
+    feedback:
+      "이름을 직접 쓰지 않아도 주변 사람들이 누구인지 알 수 있다면 친구에게 피해를 줄 수 있습니다."
+  },
+
+  {
+    text:
+      "친구의 SNS 게시물이 마음에 들지 않아 댓글을 달지 않고 그냥 넘어갔다.",
+
+    answer:true,
+
+    feedback:
+      "마음에 들지 않는 게시물에 꼭 반응할 필요는 없습니다. 갈등을 만들지 않는 것도 좋은 선택입니다."
+  },
+
+  {
+    text:
+      "친구와 다툰 뒤 화가 나서 그 친구의 비밀을 단체 채팅방에 공개했다.",
+
+    answer:false,
+
+    feedback:
+      "화가 났더라도 친구의 비밀이나 개인정보를 공개해서는 안 됩니다."
+  },
+
+  {
+    text:
+      "다른 친구가 만든 놀리는 합성사진을 재미있어서 다른 단체 채팅방에 전달했다.",
+
+    answer:false,
+
+    feedback:
+      "직접 만들지 않았더라도 전달하면 피해를 더 크게 만들 수 있습니다."
+  },
+
+  {
+    text:
+      "친구 사진을 SNS에 올리고 싶어서 먼저 친구에게 물어보고 허락을 받은 뒤 게시했다.",
+
+    answer:true,
+
+    feedback:
+      "사진 속 친구에게 먼저 허락을 받는 것은 좋은 SNS 사용 습관입니다."
+  },
+
+  {
+    text:
+      "친구의 휴대전화가 열려 있어서 장난으로 친구 SNS 계정에 들어가 글을 올렸다.",
+
+    answer:false,
+
+    feedback:
+      "친구 사이라도 다른 사람의 계정을 허락 없이 사용해서는 안 됩니다."
+  },
+
+  {
+    text:
+      "친구에 대한 확인되지 않은 소문을 듣고 단체 채팅방에 전달했다.",
+
+    answer:false,
+
+    feedback:
+      "확인되지 않은 소문은 퍼뜨리지 않는 것이 좋습니다. 전달만 해도 피해가 커질 수 있습니다."
+  },
+
+  {
+    text:
+      "친구의 실수 영상을 찍었지만 친구가 싫다고 해서 바로 삭제하고 아무에게도 보내지 않았다.",
+
+    answer:true,
+
+    feedback:
+      "친구가 싫다는 뜻을 표현했을 때 바로 삭제하고 공유하지 않은 것은 좋은 행동입니다."
+  },
+
+  {
+    text:
+      "한 친구만 빼고 새로운 단체 채팅방을 만든 뒤 그 친구를 놀렸다.",
+
+    answer:false,
+
+    feedback:
+      "특정 친구를 배제하고 놀리는 행동은 친구에게 큰 상처를 줄 수 있습니다."
+  },
+
+  {
+    text:
+      "친구에게 '친하면 비밀번호 정도는 알려줄 수 있지?'라고 계속 계정 비밀번호를 요구했다.",
+
+    answer:false,
+
+    feedback:
+      "친구 사이라도 계정 비밀번호를 요구하거나 알려주도록 압박해서는 안 됩니다."
+  },
+
+  {
+    text:
+      "친구 때문에 화가 났지만 바로 댓글을 달지 않고 잠시 멈춘 뒤 직접 이야기하기로 했다.",
+
+    answer:true,
+
+    feedback:
+      "화가 났을 때 바로 댓글이나 메시지를 보내지 않고 잠시 멈추는 것은 갈등을 줄이는 좋은 방법입니다."
+  }
+
+];
+
+
+/* ==================================================
+   실천
+================================================== */
+
+const practices = [
+
+  {
+    icon:"📷",
+    text:"친구 사진은 올리기 전에 꼭 허락받기"
+  },
+
+  {
+    icon:"⏱️",
+    text:"글이나 댓글을 올리기 전 3초 생각하기"
+  },
+
+  {
+    icon:"💬",
+    text:"단체 채팅방에서도 존중하는 말 사용하기"
+  },
+
+  {
+    icon:"🛑",
+    text:"친구를 놀리는 사진이나 영상 전달하지 않기"
+  },
+
+  {
+    icon:"🔒",
+    text:"친구의 계정과 개인정보를 함부로 사용하지 않기"
+  },
+
+  {
+    icon:"🔎",
+    text:"확인되지 않은 소문은 전달하지 않기"
+  },
+
+  {
+    icon:"🤝",
+    text:"친구가 싫다고 하면 바로 멈추기"
+  },
+
+  {
+    icon:"📵",
+    text:"화가 났을 때 바로 메시지 보내지 않기"
+  },
+
+  {
+    icon:"🧹",
+    text:"친구를 공격하는 댓글에 함께 참여하지 않기"
+  },
+
+  {
+    icon:"🙋",
+    text:"SNS 괴롭힘을 보면 믿을 수 있는 어른에게 도움 요청하기"
+  },
+
+  {
+    icon:"🔁",
+    text:"캡처한 대화 내용을 함부로 다른 사람에게 보내지 않기"
+  },
+
+  {
+    icon:"💗",
+    text:"게시하기 전 상대방의 기분을 생각하기"
+  },
+
+  {
+    icon:"👤",
+    text:"친구의 계정을 장난으로 사용하지 않기"
+  },
+
+  {
+    icon:"🤐",
+    text:"친구의 비밀을 SNS에 공개하지 않기"
+  },
+
+  {
+    icon:"✋",
+    text:"한 친구를 몰아세우는 단체 채팅에 참여하지 않기"
+  },
+
+  {
+    icon:"🧠",
+    text:"재미있는 게시물도 누군가에게 상처가 되는지 생각하기"
+  }
+
+];
+
+
+/* ==================================================
+   가치
+================================================== */
+
+const values = [
+
+  "존중",
+  "배려",
+  "공감",
+  "경청",
+  "정중함",
+
+  "책임감",
+  "정직",
+  "진실성",
+  "성실함",
+  "예의",
+
+  "인내",
+  "절제",
+  "신뢰",
+  "용기",
+  "이해",
+
+  "친절",
+  "감사",
+  "협력",
+  "나눔",
+  "공동체의식",
+
+  "다양성 존중",
+  "포용",
+  "겸손",
+  "관용",
+  "소통",
+
+  "존엄성",
+  "성숙함",
+  "자율성",
+  "도덕성",
+  "정의",
+
+  "공정성",
+  "약속 지키기",
+  "성찰",
+  "판단력",
+  "객관성",
+
+  "자기주도",
+  "자기통제",
+  "비판적 사고",
+  "자기표현",
+  "협업",
+
+  "소속감",
+  "책임 있는 행동",
+  "정보 이해력",
+  "디지털 시민의식",
+
+  "표현의 자유 존중",
+  "저작권 인식",
+  "창작 존중",
+  "정당한 인용",
+
+  "사실 기반 공유",
+  "개인정보 보호",
+  "사생활 존중",
+  "온라인 예절"
+
+];
+
+
+/* ==================================================
+   행동
+================================================== */
+
+const actions = [
+
+  {
+    icon:"👀",
+    text:"게시하기 전에 한 번 더 확인하기"
+  },
+
+  {
+    icon:"✋",
+    text:"상대방이 싫다고 하면 바로 멈추기"
+  },
+
+  {
+    icon:"📷",
+    text:"사진과 영상을 올리기 전 허락받기"
+  },
+
+  {
+    icon:"🗣️",
+    text:"온라인에서도 존중하는 말 사용하기"
+  },
+
+  {
+    icon:"🔁",
+    text:"상처 주는 게시물을 전달하지 않기"
+  },
+
+  {
+    icon:"🔎",
+    text:"사실인지 확인하고 공유하기"
+  },
+
+  {
+    icon:"🤐",
+    text:"친구의 비밀과 개인정보 지켜주기"
+  },
+
+  {
+    icon:"💗",
+    text:"상대방의 마음을 생각하고 행동하기"
+  },
+
+  {
+    icon:"🧯",
+    text:"갈등이 생기면 SNS에서 공격하지 않기"
+  },
+
+  {
+    icon:"🙋",
+    text:"사이버폭력을 보면 도움 요청하기"
+  },
+
+  {
+    icon:"🧠",
+    text:"화가 났을 때 잠시 멈추고 생각하기"
+  },
+
+  {
+    icon:"🚫",
+    text:"놀리는 게시물에 좋아요나 댓글로 가담하지 않기"
+  },
+
+  {
+    icon:"📱",
+    text:"단체 채팅방에서 한 사람을 몰아세우지 않기"
+  },
+
+  {
+    icon:"🔒",
+    text:"다른 사람의 계정에 허락 없이 들어가지 않기"
+  },
+
+  {
+    icon:"📢",
+    text:"확인되지 않은 소문을 퍼뜨리지 않기"
+  },
+
+  {
+    icon:"🧹",
+    text:"문제가 되는 게시물을 더 이상 공유하지 않기"
+  },
+
+  {
+    icon:"🤝",
+    text:"온라인 갈등은 차분하게 대화로 해결하기"
+  },
+
+  {
+    icon:"🌱",
+    text:"친구에게 힘이 되는 댓글 남기기"
+  }
+
+];
+
+
+/* ==================================================
+   로드
+================================================== */
+
+window.addEventListener(
+  "load",
+  function(){
+
+    renderPractices();
+
+    renderValues();
+
+    renderActions();
+
+    updateCharacterCount();
+
+  }
+);
+
+
+/* ==================================================
+   저장 키
+================================================== */
+
+function getStorageKey(id){
+
+  return STORAGE_PREFIX +
+    String(id).trim();
+
+}
+
+
+/* ==================================================
+   저장된 학번 확인
+================================================== */
+
+function checkSavedStudent(){
+
+  const id =
+    document
+      .getElementById("studentId")
+      .value
+      .trim();
+
+
+  const area =
+    document.getElementById("resumeArea");
+
+
+  if(!id){
+
+    area.style.display="none";
+
+    return;
+
+  }
+
+
+  const saved =
+    localStorage.getItem(
+      getStorageKey(id)
+    );
+
+
+  if(!saved){
+
+    area.style.display="none";
+
+    return;
+
+  }
+
+
+  try{
+
+    const data =
+      JSON.parse(saved);
+
+
+    document
+      .getElementById("studentName")
+      .value =
+      data.studentName || "";
+
+
+    document
+      .getElementById("resumeInfo")
+      .innerHTML =
+      `
+      💾 <strong>${escapeHtml(id)}</strong> 학번의
+      저장된 활동이 있습니다.<br>
+
+      현재 저장 단계 :
+      <strong>${data.currentStep || 1}단계</strong>
+      `;
+
+
+    document
+      .getElementById("resumeBtn")
+      .textContent =
+      `↩ ${data.currentStep || 1}단계부터 이어하기`;
+
+
+    area.style.display="block";
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    area.style.display="none";
+
+  }
+
+}
+
+
+/* ==================================================
+   새 활동 시작
+================================================== */
+
+function startProject(){
+
+  const id =
+    document
+      .getElementById("studentId")
+      .value
+      .trim();
+
+
+  const name =
+    document
+      .getElementById("studentName")
+      .value
+      .trim();
+
+
+  if(!id){
+
+    alert(
+      "학번을 입력해주세요."
+    );
+
+    return;
+
+  }
+
+
+  if(!name){
+
+    alert(
+      "이름을 입력해주세요."
+    );
+
+    return;
+
+  }
+
+
+  const saved =
+    localStorage.getItem(
+      getStorageKey(id)
+    );
+
+
+  if(saved){
+
+    const answer =
+      confirm(
+        "이 학번으로 저장된 활동이 있습니다.\n\n" +
+        "확인 : 이어하기\n" +
+        "취소 : 처음부터 시작하기"
+      );
+
+
+    if(answer){
+
+      resumeProject();
+
+      return;
+
+    }
+
+  }
+
+
+  state = {
+
+    studentId:id,
+
+    studentName:name,
+
+    currentStep:1,
+
+    quizIndex:0,
+
+    quizAnswers:[],
+
+    practices:[],
+
+    values:[],
+
+    actions:[],
+
+    promptType:"short",
+
+    prompt:"",
+
+    slogan:""
+
+  };
+
+
+  saveState(false);
+
+  openProject();
+
+}
+
+
+/* ==================================================
+   이어하기
+================================================== */
+
+function resumeProject(){
+
+  const id =
+    document
+      .getElementById("studentId")
+      .value
+      .trim();
+
+
+  const saved =
+    localStorage.getItem(
+      getStorageKey(id)
+    );
+
+
+  if(!saved){
+
+    alert(
+      "저장된 활동이 없습니다."
+    );
+
+    return;
+
+  }
+
+
+  try{
+
+    state =
+      JSON.parse(saved);
+
+
+    normalizeState();
+
+    openProject();
+
+
+    showToast(
+      `${state.currentStep}단계부터 이어서 시작합니다.`
+    );
+
+  }
+  catch(error){
+
+    console.error(error);
+
+    alert(
+      "저장된 활동을 불러오지 못했습니다."
+    );
+
+  }
+
+}
+
+
+/* ==================================================
+   저장 데이터 정리
+================================================== */
+
+function normalizeState(){
+
+  if(
+    !Array.isArray(
+      state.quizAnswers
+    )
+  ){
+
+    state.quizAnswers=[];
+
+  }
+
+
+  if(
+    !Array.isArray(
+      state.practices
+    )
+  ){
+
+    state.practices=[];
+
+  }
+
+
+  if(
+    !Array.isArray(
+      state.values
+    )
+  ){
+
+    state.values=[];
+
+  }
+
+
+  if(
+    !Array.isArray(
+      state.actions
+    )
+  ){
+
+    state.actions=[];
+
+  }
+
+
+  if(
+    typeof state.quizIndex
+    !== "number"
+  ){
+
+    state.quizIndex=0;
+
+  }
+
+
+  state.currentStep =
+    Number(
+      state.currentStep
+    ) || 1;
+
+
+  state.promptType =
+    state.promptType || "short";
+
+
+  state.prompt =
+    state.prompt || "";
+
+
+  state.slogan =
+    state.slogan || "";
+
+}
+
+
+/* ==================================================
+   프로젝트 열기
+================================================== */
+
+function openProject(){
+
+  normalizeState();
+
+
+  document
+    .getElementById("loginScreen")
+    .style.display="none";
+
+
+  document
+    .getElementById("projectScreen")
+    .style.display="block";
+
+
+  document
+    .getElementById("studentChip")
+    .textContent =
+    `${state.studentId} ${state.studentName}`;
+
+
+  document
+    .getElementById("sloganInput")
+    .value =
+    state.slogan || "";
+
+
+  renderQuiz();
+
+  restoreSelections();
+
+  updateCharacterCount();
+
+  showStep(
+    state.currentStep
+  );
+
+}
+
+
+/* ==================================================
+   단계
+================================================== */
+
+function showStep(num){
+
+  document
+    .querySelectorAll(".step")
+    .forEach(
+      function(step){
+
+        step.classList.remove(
+          "active"
+        );
+
+      }
+    );
+
+
+  const target =
+    document.getElementById(
+      "step" + num
+    );
+
+
+  if(target){
+
+    target.classList.add(
+      "active"
+    );
+
+  }
+
+
+  document
+    .getElementById("mainProgress")
+    .style.width =
+    (
+      num / 6 * 100
+    ) + "%";
+
+
+  if(num === 4){
+
+    preparePromptStep();
+
+  }
+
+
+  if(num === 6){
+
+    renderResult();
+
+  }
+
+
+  window.scrollTo({
+
+    top:0,
+
+    behavior:"smooth"
+
+  });
+
+}
+
+
+function goStep(num){
+
+  state.currentStep=num;
+
+
+  saveSloganToState();
+
+  savePromptToState();
+
+  saveState(false);
+
+  showStep(num);
+
+}
+
+
+/* ==================================================
+   퀴즈
+================================================== */
+
+function renderQuiz(){
+
+  if(state.quizIndex < 0){
+
+    state.quizIndex=0;
+
+  }
+
+
+  if(
+    state.quizIndex >=
+    quizzes.length
+  ){
+
+    state.quizIndex =
+      quizzes.length - 1;
+
+  }
+
+
+  const q =
+    quizzes[
+      state.quizIndex
+    ];
+
+
+  document
+    .getElementById("quizScenario")
+    .textContent =
+    q.text;
+
+
+  document
+    .getElementById("quizCount")
+    .textContent =
+    `${state.quizIndex + 1} / ${quizzes.length}`;
+
+
+  document
+    .getElementById("quizProgressBar")
+    .style.width =
+    (
+      (
+        state.quizIndex + 1
+      )
+      /
+      quizzes.length
+      *
+      100
+    ) + "%";
+
+
+  const feedback =
+    document.getElementById(
+      "quizFeedback"
+    );
+
+
+  const next =
+    document.getElementById(
+      "nextQuizBtn"
+    );
+
+
+  const prev =
+    document.getElementById(
+      "prevQuizBtn"
+    );
+
+
+  const yesBtn =
+    document.getElementById(
+      "yesQuizBtn"
+    );
+
+
+  const noBtn =
+    document.getElementById(
+      "noQuizBtn"
+    );
+
+
+  yesBtn.classList.remove(
+    "selected-yes"
+  );
+
+
+  noBtn.classList.remove(
+    "selected-no"
+  );
+
+
+  prev.style.display =
+    state.quizIndex > 0
+    ? "block"
+    : "none";
+
+
+  const old =
+    state.quizAnswers[
+      state.quizIndex
+    ];
+
+
+  if(old){
+
+    if(old.answer === true){
+
+      yesBtn.classList.add(
+        "selected-yes"
+      );
+
+    }
+    else{
+
+      noBtn.classList.add(
+        "selected-no"
+      );
+
+    }
+
+
+    feedback.innerHTML =
+      `
+      <strong>
+      ${
+        old.correct
+        ? "✅ 좋은 선택이에요!"
+        : "💡 다시 생각해 볼까요?"
+      }
+      </strong>
+
+      ${q.feedback}
+      `;
+
+
+    feedback.style.display =
+      "block";
+
+
+    next.style.display =
+      "block";
+
+
+    next.textContent =
+      state.quizIndex
+      === quizzes.length - 1
+
+      ? "1단계 마무리 →"
+
+      : "다음 문제 →";
+
+  }
+  else{
+
+    feedback.style.display =
+      "none";
+
+
+    next.style.display =
+      "none";
+
+  }
+
+
+  document
+    .getElementById(
+      "quizFinishNav"
+    )
+    .style.display =
+    "none";
+
+}
+
+
+/* ==================================================
+   퀴즈 답
+================================================== */
+
+function answerQuiz(answer){
+
+  const q =
+    quizzes[
+      state.quizIndex
+    ];
+
+
+  state.quizAnswers[
+    state.quizIndex
+  ] = {
+
+    answer:answer,
+
+    correct:
+      answer === q.answer
+
+  };
+
+
+  saveState(false);
+
+  renderQuiz();
+
+}
+
+
+/* ==================================================
+   이전 문제
+================================================== */
+
+function previousQuiz(){
+
+  if(
+    state.quizIndex <= 0
+  ){
+
+    return;
+
+  }
+
+
+  state.quizIndex--;
+
+
+  saveState(false);
+
+  renderQuiz();
+
+
+  window.scrollTo({
+
+    top:0,
+
+    behavior:"smooth"
+
+  });
+
+}
+
+
+/* ==================================================
+   다음 문제
+================================================== */
+
+function nextQuiz(){
+
+  if(
+    !state.quizAnswers[
+      state.quizIndex
+    ]
+  ){
+
+    alert(
+      "먼저 선택해 주세요."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    state.quizIndex
+    <
+    quizzes.length - 1
+  ){
+
+    state.quizIndex++;
+
+
+    saveState(false);
+
+    renderQuiz();
+
+    return;
+
+  }
+
+
+  document
+    .getElementById(
+      "quizFeedback"
+    )
+    .innerHTML =
+    `
+    <strong>
+      🎉 모든 상황을 살펴보았습니다.
+    </strong>
+
+    SNS에서는 올리기 전에
+    상대방의 마음과 상황을
+    한 번 더 생각하는 것이 중요합니다.
+    `;
+
+
+  document
+    .getElementById(
+      "quizFeedback"
+    )
+    .style.display =
+    "block";
+
+
+  document
+    .getElementById(
+      "nextQuizBtn"
+    )
+    .style.display =
+    "none";
+
+
+  document
+    .getElementById(
+      "quizFinishNav"
+    )
+    .style.display =
+    "flex";
+
+
+  saveState(false);
+
+}
+
+
+/* ==================================================
+   실천 생성
+================================================== */
+
+function renderPractices(){
+
+  const grid =
+    document.getElementById(
+      "practiceGrid"
+    );
+
+
+  grid.innerHTML="";
+
+
+  practices.forEach(
+    function(item,index){
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "choice-card";
+
+
+      div.innerHTML =
+        `
+        <span class="choice-icon">
+          ${item.icon}
+        </span>
+
+        <span>
+          ${item.text}
+        </span>
+        `;
+
+
+      div.onclick =
+        function(){
+
+          selectPractice(index);
+
+        };
+
+
+      grid.appendChild(div);
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   실천 3개
+================================================== */
+
+function selectPractice(index){
+
+  const text =
+    practices[index].text;
+
+
+  const p =
+    state.practices
+      .indexOf(text);
+
+
+  if(p >= 0){
+
+    state.practices
+      .splice(p,1);
+
+  }
+  else{
+
+    if(
+      state.practices.length
+      >= 3
+    ){
+
+      alert(
+        "실천 행동은 3개까지 선택할 수 있습니다."
+      );
+
+      return;
+
+    }
+
+
+    state.practices
+      .push(text);
+
+  }
+
+
+  restoreSelections();
+
+  saveState(false);
+
+}
+
+
+function validateStep2(){
+
+  if(
+    state.practices.length
+    !== 3
+  ){
+
+    alert(
+      "실천 행동을 3개 선택해주세요."
+    );
+
+    return;
+
+  }
+
+
+  goStep(3);
+
+}
+
+
+/* ==================================================
+   가치 생성
+================================================== */
+
+function renderValues(){
+
+  const grid =
+    document.getElementById(
+      "valueGrid"
+    );
+
+
+  grid.innerHTML="";
+
+
+  values.forEach(
+    function(value){
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type =
+        "button";
+
+
+      button.className =
+        "value-chip";
+
+
+      button.dataset.value =
+        value;
+
+
+      button.textContent =
+        value;
+
+
+      button.onclick =
+        function(){
+
+          selectValue(value);
+
+        };
+
+
+      grid.appendChild(
+        button
+      );
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   가치 2개 선택
+================================================== */
+
+function selectValue(value){
+
+  const p =
+    state.values
+      .indexOf(value);
+
+
+  if(p >= 0){
+
+    state.values
+      .splice(p,1);
+
+  }
+  else{
+
+    if(
+      state.values.length
+      >= 2
+    ){
+
+      alert(
+        "가치는 2개까지 선택할 수 있습니다."
+      );
+
+      return;
+
+    }
+
+
+    state.values
+      .push(value);
+
+  }
+
+
+  restoreSelections();
+
+  saveState(false);
+
+}
+
+
+/* ==================================================
+   행동 생성
+================================================== */
+
+function renderActions(){
+
+  const grid =
+    document.getElementById(
+      "actionGrid"
+    );
+
+
+  grid.innerHTML="";
+
+
+  actions.forEach(
+    function(item,index){
+
+      const div =
+        document.createElement(
+          "div"
+        );
+
+
+      div.className =
+        "choice-card";
+
+
+      div.innerHTML =
+        `
+        <span class="choice-icon">
+          ${item.icon}
+        </span>
+
+        <span>
+          ${item.text}
+        </span>
+        `;
+
+
+      div.onclick =
+        function(){
+
+          selectAction(index);
+
+        };
+
+
+      grid.appendChild(div);
+
+    }
+  );
+
+}
+
+
+/* ==================================================
+   행동 2개 선택
+================================================== */
+
+function selectAction(index){
+
+  const text =
+    actions[index].text;
+
+
+  const p =
+    state.actions
+      .indexOf(text);
+
+
+  if(p >= 0){
+
+    state.actions
+      .splice(p,1);
+
+  }
+  else{
+
+    if(
+      state.actions.length
+      >= 2
+    ){
+
+      alert(
+        "행동은 2개까지 선택할 수 있습니다."
+      );
+
+      return;
+
+    }
+
+
+    state.actions
+      .push(text);
+
+  }
+
+
+  restoreSelections();
+
+  saveState(false);
+
+}
+
+
+/* ==================================================
+   STEP 3 확인
+================================================== */
+
+function validateStep3(){
+
+  if(
+    state.values.length
+    !== 2
+  ){
+
+    alert(
+      "가치를 2개 선택해주세요."
+    );
+
+    return;
+
+  }
+
+
+  if(
+    state.actions.length
+    !== 2
+  ){
+
+    alert(
+      "행동을 2개 선택해주세요."
+    );
+
+    return;
+
+  }
+
+
+  goStep(4);
+
+}
+
+
+/* ==================================================
+   선택 상태 표시
+================================================== */
+
+function restoreSelections(){
+
+  document
+    .querySelectorAll(
+      "#practiceGrid .choice-card"
+    )
+    .forEach(
+      function(el,index){
+
+        el.classList.toggle(
+          "selected",
+
+          state.practices.includes(
+            practices[index].text
+          )
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "practiceCount"
+    )
+    .textContent =
+    `${state.practices.length} / 3`;
+
+
+  document
+    .querySelectorAll(
+      ".value-chip"
+    )
+    .forEach(
+      function(el){
+
+        el.classList.toggle(
+          "selected",
+
+          state.values.includes(
+            el.dataset.value
+          )
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "valueCount"
+    )
+    .textContent =
+    `${state.values.length} / 2`;
+
+
+  document
+    .querySelectorAll(
+      "#actionGrid .choice-card"
+    )
+    .forEach(
+      function(el,index){
+
+        el.classList.toggle(
+          "selected",
+
+          state.actions.includes(
+            actions[index].text
+          )
+        );
+
+      }
+    );
+
+
+  document
+    .getElementById(
+      "actionCount"
+    )
+    .textContent =
+    `${state.actions.length} / 2`;
+
+}
+
+
+/* ==================================================
+   프롬프트 단계 준비
+================================================== */
+
+function preparePromptStep(){
+
+  selectPromptType(
+    state.promptType || "short",
+    false
+  );
+
+}
+
+
+/* ==================================================
+   프롬프트 유형 선택
+================================================== */
+
+function selectPromptType(
+  type,
+  overwrite=true
+){
+
+  state.promptType =
+    type;
+
+
+  document
+    .querySelectorAll(
+      ".prompt-type-card"
+    )
+    .forEach(
+      function(card){
+
+        card.classList.toggle(
+          "selected",
+
+          card.dataset.type ===
+          type
+        );
+
+      }
+    );
+
+
+  if(
+    overwrite ||
+    !state.prompt
+  ){
+
+    state.prompt =
+      buildPrompt(type);
+
+  }
+
+
+  document
+    .getElementById(
+      "editablePrompt"
+    )
+    .value =
+    state.prompt;
+
+
+  saveState(false);
+
+}
+
+
+/* ==================================================
+   프롬프트 자동 생성
+================================================== */
+
+function buildPrompt(type){
+
+  const valueText =
+    state.values.join(", ");
+
+
+  const actionText =
+    state.actions.join(", ");
+
+
+  const practiceText =
+    state.practices.join(", ");
+
+
+  const base =
+`나는 중학생 캠페인 슬로건을 잘 쓰는 카피라이터야.
+
+핵심 가치: ${valueText}
+실천하는 방법: ${actionText}
+내가 실천하고 싶은 행동: ${practiceText}
+
+이 내용을 바탕으로 클린 SNS 슬로건을 5개 만들어줘.`;
+
+
+  if(type === "short"){
+
+    return (
+`${base}
+
+조건:
+- 한 줄 12자 이내
+- 짧고 강하게
+- 중학생이 쉽게 이해할 수 있게
+- 읽자마자 의미가 느껴지게
+- 실제 행동이 떠오르게
+- 너무 딱딱하거나 교훈적이지 않게`
+    );
+
+  }
+
+
+  if(type === "rhythm"){
+
+    return (
+`${base}
+
+조건:
+- 앞뒤 문장이 짝을 이루게
+- 소리 내어 읽었을 때 리듬감 있게
+- 반복되는 말이나 비슷한 문장 구조 활용
+- 중학생이 쉽게 따라 말할 수 있게
+- 한 슬로건은 너무 길지 않게
+- 서로 다른 느낌으로 5개`
+    );
+
+  }
+
+
+  if(type === "question"){
+
+    return (
+`${base}
+
+조건:
+- 읽는 사람이 스스로 생각하게 만드는 질문형
+- 중학생이 바로 이해할 수 있게
+- 너무 무겁거나 공격적인 표현은 피하기
+- 짧고 기억하기 쉽게
+- SNS에서의 실제 행동이 떠오르게
+- 서로 다른 질문형 슬로건 5개`
+    );
+
+  }
+
+
+  if(type === "metaphor"){
+
+    return (
+`${base}
+
+조건:
+- SNS 행동을 일상 속 사물이나 장면에 빗대어 표현
+- 중학생도 바로 이해할 수 있는 쉬운 비유 사용
+- 억지스럽거나 어려운 표현은 피하기
+- 따뜻하거나 인상적인 느낌으로
+- 짧고 기억하기 쉽게
+- 서로 다른 비유형 슬로건 5개`
+    );
+
+  }
+
+
+  if(type === "poster"){
+
+    return (
+`${base}
+
+포스터에 사용할 수 있도록 다음 형식으로 5개 만들어줘.
+
+형식:
+큰 문구: 짧고 강한 핵심 슬로건
+작은 문구: 큰 문구의 의미를 설명하는 짧은 문장
+
+조건:
+- 큰 문구는 15자 안팎
+- 작은 문구는 한 문장
+- 학교 캠페인 포스터에 잘 어울리게
+- 중학생이 쉽게 이해할 수 있게
+- 너무 딱딱하지 않게`
+    );
+
+  }
+
+
+  return base;
+
+}
+
+
+/* ==================================================
+   프롬프트 수정
+================================================== */
+
+function promptChanged(){
+
+  state.prompt =
+    document
+      .getElementById(
+        "editablePrompt"
+      )
+      .value;
+
+
+  saveState(false);
+
+}
+
+
+function savePromptToState(){
+
+  const input =
+    document.getElementById(
+      "editablePrompt"
+    );
+
+
+  if(input){
+
+    state.prompt =
+      input.value;
+
+  }
+
+}
+
+
+/* ==================================================
+   프롬프트 복사
+================================================== */
+
+function copyPrompt(){
+
+  savePromptToState();
+
+
+  const text =
+    state.prompt;
+
+
+  if(
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ){
+
+    navigator.clipboard
+      .writeText(text)
+      .then(
+        function(){
+
+          showToast(
+            "📋 프롬프트를 복사했습니다."
+          );
+
+        }
+      )
+      .catch(
+        function(){
+
+          fallbackCopy(text);
+
+        }
+      );
+
+  }
+  else{
+
+    fallbackCopy(text);
+
+  }
+
+}
+
+
+function fallbackCopy(text){
+
+  const textarea =
+    document.createElement(
+      "textarea"
+    );
+
+
+  textarea.value =
+    text;
+
+
+  document.body.appendChild(
+    textarea
+  );
+
+
+  textarea.select();
+
+
+  document.execCommand(
+    "copy"
+  );
+
+
+  textarea.remove();
+
+
+  showToast(
+    "📋 프롬프트를 복사했습니다."
+  );
+
+}
+
+
+/* ==================================================
+   STEP 4 확인
+================================================== */
+
+function validateStep4(){
+
+  savePromptToState();
+
+
+  if(!state.prompt.trim()){
+
+    alert(
+      "프롬프트를 확인하거나 수정해주세요."
+    );
+
+    return;
+
+  }
+
+
+  goStep(5);
+
+}
+
+
+/* ==================================================
+   슬로건
+================================================== */
+
+function sloganChanged(){
+
+  saveSloganToState();
+
+  updateCharacterCount();
+
+  saveState(false);
+
+}
+
+
+function saveSloganToState(){
+
+  const input =
+    document.getElementById(
+      "sloganInput"
+    );
+
+
+  if(input){
+
+    state.slogan =
+      input.value.trim();
+
+  }
+
+}
+
+
+function updateCharacterCount(){
+
+  const input =
+    document.getElementById(
+      "sloganInput"
+    );
+
+
+  if(!input){
+    return;
+  }
+
+
+  document
+    .getElementById(
+      "charCount"
+    )
+    .textContent =
+    `${input.value.length} / 100`;
+
+}
+
+
+function validateStep5(){
+
+  saveSloganToState();
+
+
+  if(!state.slogan){
+
+    alert(
+      "나만의 클린 SNS 슬로건을 입력해주세요."
+    );
+
+    return;
+
+  }
+
+
+  goStep(6);
+
+}
+
+
+/* ==================================================
+   슬로건 글자 크기 자동 조절
+================================================== */
+
+function adjustSloganFontSize(){
+
+  const slogan =
+    document.getElementById(
+      "resultSlogan"
+    );
+
+
+  const length =
+    state.slogan.length;
+
+
+  let size = 42;
+
+
+  if(length > 70){
+
+    size = 21;
+
+  }
+  else if(length > 60){
+
+    size = 23;
+
+  }
+  else if(length > 50){
+
+    size = 25;
+
+  }
+  else if(length > 40){
+
+    size = 28;
+
+  }
+  else if(length > 32){
+
+    size = 31;
+
+  }
+  else if(length > 24){
+
+    size = 34;
+
+  }
+  else if(length > 18){
+
+    size = 38;
+
+  }
+
+
+  slogan.style.fontSize =
+    size + "px";
+
+
+  slogan.style.lineHeight =
+    length > 45
+    ? "1.5"
+    : "1.4";
+
+}
+
+
+/* ==================================================
+   결과
+================================================== */
+
+function renderResult(){
+
+  document
+    .getElementById(
+      "resultStudent"
+    )
+    .textContent =
+    `${state.studentId} ${state.studentName}`;
+
+
+  document
+    .getElementById(
+      "resultSlogan"
+    )
+    .textContent =
+    state.slogan;
+
+
+  adjustSloganFontSize();
+
+
+  document
+    .getElementById(
+      "resultValue"
+    )
+    .textContent =
+    state.values.join(" · ");
+
+
+  document
+    .getElementById(
+      "resultActions"
+    )
+    .innerHTML =
+    state.actions
+      .map(
+        function(text){
+
+          return (
+            "✓ " +
+            escapeHtml(text)
+          );
+
+        }
+      )
+      .join("<br>");
+
+
+  document
+    .getElementById(
+      "resultPractice"
+    )
+    .innerHTML =
+    state.practices
+      .map(
+        function(text,index){
+
+          return `
+          <div class="practice-item">
+            ${index + 1}. ${escapeHtml(text)}
+          </div>
+          `;
+
+        }
+      )
+      .join("");
+
+
+  saveState(false);
+
+}
+
+
+/* ==================================================
+   저장
+================================================== */
+
+function saveState(showMessage){
+
+  if(!state.studentId){
+
+    return;
+
+  }
+
+
+  try{
+
+    localStorage.setItem(
+
+      getStorageKey(
+        state.studentId
+      ),
+
+      JSON.stringify(
+        state
+      )
+
+    );
+
+
+    if(showMessage){
+
+      showToast(
+        "💾 현재 단계까지 저장되었습니다."
+      );
+
+    }
+
+  }
+  catch(error){
+
+    console.error(error);
+
+
+    if(showMessage){
+
+      alert(
+        "저장하지 못했습니다."
+      );
+
+    }
+
+  }
+
+}
+
+
+function manualSave(){
+
+  saveSloganToState();
+
+  savePromptToState();
+
+  saveState(true);
+
+}
+
+
+/* ==================================================
+   알림
+================================================== */
+
+let toastTimer;
+
+
+function showToast(text){
+
+  const toast =
+    document.getElementById(
+      "saveToast"
+    );
+
+
+  toast.textContent =
+    text;
+
+
+  toast.classList.add(
+    "show"
+  );
+
+
+  clearTimeout(
+    toastTimer
+  );
+
+
+  toastTimer =
+    setTimeout(
+      function(){
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      1500
+    );
+
+}
+
+
+/* ==================================================
+   PNG 저장
+================================================== */
+
+async function downloadResult(){
+
+  adjustSloganFontSize();
+
+
+  const card =
+    document.getElementById(
+      "resultCard"
+    );
+
+
+  const button =
+    document.getElementById(
+      "downloadBtn"
+    );
+
+
+  const original =
+    button.innerHTML;
+
+
+  button.disabled=true;
+
+
+  button.innerHTML =
+    "✨ 이미지 만드는 중...";
+
+
+  try{
+
+    await new Promise(
+      function(resolve){
+
+        setTimeout(
+          resolve,
+          120
+        );
+
+      }
+    );
+
+
+    const canvas =
+      await html2canvas(
+        card,
+        {
+
+          scale:3,
+
+          backgroundColor:
+            "#ffffff",
+
+          useCORS:true,
+
+          logging:false,
+
+          scrollX:0,
+
+          scrollY:0,
+
+          windowWidth:
+            card.scrollWidth,
+
+          windowHeight:
+            card.scrollHeight
+
+        }
+      );
+
+
+    const link =
+      document.createElement(
+        "a"
+      );
+
+
+    link.download =
+      `클린SNS_${state.studentId}_${state.studentName}.png`;
+
+
+    link.href =
+      canvas.toDataURL(
+        "image/png",
+        1.0
+      );
+
+
+    document.body
+      .appendChild(
+        link
+      );
+
+
+    link.click();
+
+
+    link.remove();
+
+
+    button.innerHTML =
+      "✅ 이미지 저장 완료!";
+
+
+    setTimeout(
+      function(){
+
+        button.innerHTML =
+          original;
+
+        button.disabled =
+          false;
+
+      },
+      1600
+    );
+
+  }
+  catch(error){
+
+    console.error(error);
+
+
+    alert(
+      "이미지를 저장하지 못했습니다."
+    );
+
+
+    button.innerHTML =
+      original;
+
+
+    button.disabled =
+      false;
+
+  }
+
+}
+
+
+/* ==================================================
+   처음부터 다시
+================================================== */
+
+function resetProject(){
+
+  const answer =
+    confirm(
+      "현재 학번의 저장 내용을 삭제하고 처음부터 다시 시작할까요?"
+    );
+
+
+  if(!answer){
+
+    return;
+
+  }
+
+
+  if(state.studentId){
+
+    localStorage.removeItem(
+      getStorageKey(
+        state.studentId
+      )
+    );
+
+  }
+
+
+  location.reload();
+
+}
+
+
+/* ==================================================
+   HTML 보호
+================================================== */
+
+function escapeHtml(text){
+
+  const div =
+    document.createElement(
+      "div"
+    );
+
+
+  div.textContent =
+    text || "";
+
+
+  return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
